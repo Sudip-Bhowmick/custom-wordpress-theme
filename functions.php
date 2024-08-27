@@ -5,6 +5,7 @@ function my_theme_scripts() {
 add_action('wp_enqueue_scripts', 'my_theme_scripts');
 
 function my_custom_theme_setup() {
+	add_theme_support('title-tag');
 	// Add support for navigation menus
 	register_nav_menus(array(
 		'primary' => __('Primary Menu', 'my_custom_theme'),
@@ -52,8 +53,3 @@ function enqueue_page_styles() {
 	//     }
 }
 add_action('wp_enqueue_scripts', 'enqueue_page_styles');
-
-
-
-
-
