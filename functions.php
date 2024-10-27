@@ -1,4 +1,10 @@
 <?php
+// theme color
+function force_theme_color_meta_tag() {
+    remove_action('wp_head', 'theme_slug_default_theme_color');
+    echo '<meta name="theme-color" content="#3A0F69">';
+}
+// Enqueue theme styles
 function my_theme_scripts() {
 	wp_enqueue_style('my-theme-style', get_stylesheet_uri());
 }
