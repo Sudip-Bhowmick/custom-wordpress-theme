@@ -26,6 +26,17 @@ function my_theme_setup(){
 }
 add_action('after_setup_theme', 'my_theme_setup');
 
+// General security headers
+function add_security_headers() {
+    header("X-Frame-Options: SAMEORIGIN");
+    header("X-XSS-Protection: 1; mode=block");
+    header("X-Content-Type-Options: nosniff");
+    header("Referrer-Policy: no-referrer-when-downgrade");
+    header("Content-Security-Policy: default-src 'self';");
+    header("Permissions-Policy: geolocation=(), camera=(), microphone=(), accelerometer=(), gyroscope=(), magnetometer=()");
+}
+// add_action('send_headers', 'add_security_headers');
+
 
 // global files
 function enqueue_global_styles() {
