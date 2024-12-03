@@ -37,6 +37,10 @@ function add_security_headers() {
 }
 // add_action('send_headers', 'add_security_headers');
 
+// Remove WordPress version number from HTML head
+remove_action('wp_head', 'wp_generator');
+header_remove("X-Powered-By");
+
 
 // global files
 function enqueue_global_styles() {
