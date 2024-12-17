@@ -6,6 +6,11 @@
 html {
   margin-top: 0 !important;
 }
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: auto !important;
+  }
+}
 
 :root {
   --font_primary: Helvetica;
