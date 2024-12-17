@@ -661,6 +661,10 @@ a {
 .hfe-flyout-content {
   background-color: var(--e-global-color-secondary) !important;
   padding: 30px 0 !important;
+  height: calc(100vh - 90px) !important;
+}
+.elementor-clickable.hfe-flyout-close {
+  display: none;
 }
 .hfe-nav-menu-icon svg rect:nth-child(1) {
   transform-origin: top left;
