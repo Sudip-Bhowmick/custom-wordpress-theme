@@ -5,6 +5,7 @@ function force_theme_color_meta_tag() {
     echo '<meta name="theme-color" content="#3A0F69">';
 }
 add_action('wp_head', 'force_theme_color_meta_tag', 1);
+
 // Enqueue theme styles
 function my_theme_scripts() {
 	wp_enqueue_style('my-theme-style', get_stylesheet_uri());
@@ -81,3 +82,107 @@ function enqueue_page_styles() {
 	//     }
 }
 add_action('wp_enqueue_scripts', 'enqueue_page_styles');
+
+// search
+function search_bar() {
+    ob_start(); ?>
+<div class="search_box">
+    <div class="search-container">
+        <form id="searchform" action="<?php echo esc_url(home_url('/')); ?>" method="get">
+            <div class="search">
+                <input type="text" id="search" name="s" placeholder="Type to search..." autocomplete="off">
+                <button class="search-btn"><img
+                        src="<?php echo get_template_directory_uri() . '/img/search-icon.svg'; ?>"></button>
+            </div>
+            <div id="result" class="search-suggestions"></div>
+        </form>
+        <img src="<?php echo get_template_directory_uri() . '/img/close-icon.svg'; ?>" class="close_search"
+            alt="Close search">
+    </div>
+</div>
+<?php
+    return ob_get_clean();
+}
+add_shortcode('customSearch', 'search_bar'); // shortcode [customSearch]
+
+function enqueue_search_scripts() {
+    wp_enqueue_script('custom-search', get_template_directory_uri() . '/js/custom-search.js', array('jquery'), '1.0', true);
+    wp_localize_script('custom-search', 'ajax_url', admin_url('admin-ajax.php'));
+}
+add_action('wp_enqueue_scripts', 'enqueue_search_scripts');
+
+function fetch_search_results() {
+    $keyword = sanitize_text_field($_POST['keyword']);
+    $results = [];
+
+    // Query for posts, pages, and custom post types
+    $args = [
+        's' => $keyword,
+        'posts_per_page' => 5,
+        'post_type' => ['post', 'page', 'product'], // Add the desired post types
+        'tax_query' => [
+            [
+                'taxonomy' => 'category', // Exclude 'news' category
+                'field' => 'slug',
+                'terms' => ['news'],
+                'operator' => 'NOT IN',
+            ],
+        ],
+    ];
+
+    $query = new WP_Query($args);
+
+    if ($query->have_posts()) {
+        while ($query->have_posts()) {
+            $query->the_post();
+            $thumbnail = get_the_post_thumbnail_url(get_the_ID(), 'thumbnail');
+            $results[] = [
+                'type' => 'post', // Mark it as a post result
+                'title' => get_the_title(),
+                'url' => get_permalink(),
+                'thumbnail' => $thumbnail,
+            ];
+        }
+    }
+
+    // Query for menu items
+    $menu_name = 'dropdown-menu'; // Replace with your menu slug
+    $menu_items = wp_get_nav_menu_items($menu_name);
+
+    if ($menu_items) {
+        foreach ($menu_items as $item) {
+            if (stripos($item->title, $keyword) !== false) { // Check if menu title contains the keyword
+                $results[] = [
+                    'type' => 'menu', // Mark it as a menu result
+                    'title' => $item->title,
+                    'url' => $item->url,
+                    'thumbnail' => '', // No thumbnail for menu items
+                ];
+            }
+        }
+    }
+
+    // Output the results
+    if (!empty($results)) {
+        echo '<ul>';
+        foreach ($results as $result) {
+            echo '<li>';
+            echo '<a target="_blank" href="' . esc_url($result['url']) . '">';
+            if ($result['type'] === 'post' && !empty($result['thumbnail'])) {
+                echo '<img src="' . esc_url($result['thumbnail']) . '" alt="' . esc_attr($result['title']) . '">';
+            }
+            echo '<span>' . esc_html($result['title']) . '</span>';
+            echo '</a>';
+            echo '</li>';
+        }
+        echo '</ul>';
+        echo '<a href="' . esc_url(home_url('/?s=' . $keyword)) . '" class="view-all">View all</a>';
+    } else {
+        echo '<p>No results found.</p>';
+    }
+
+    wp_die(); // Ends the request
+}
+
+add_action('wp_ajax_fetch_search_results', 'fetch_search_results');
+add_action('wp_ajax_nopriv_fetch_search_results', 'fetch_search_results');

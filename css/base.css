@@ -679,3 +679,135 @@ a {
   rx: 3;
   transition: 0.3s;
 }
+
+/* search */
+.search_box {
+  display: none;
+}
+.search_box {
+  visibility: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 999;
+  background-color: #0000009e;
+}
+.search_box.active {
+  display: flex;
+  justify-content: center;
+  visibility: visible;
+  align-items: center;
+}
+.search-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+#searchform {
+  position: relative;
+  width: 380px;
+}
+@media (max-width: 767px) {
+  #searchform {
+    width: 100%;
+  }
+}
+.close_search {
+  cursor: pointer;
+}
+button.search-btn {
+  background-color: transparent;
+  width: 26px;
+  padding: 0;
+  position: absolute;
+  right: 8px;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  outline: none;
+  border: none;
+}
+#search {
+  font-size: 14px;
+  text-indent: 3px;
+  display: inline-block;
+  padding: 10px 40px 10px 10px;
+  margin: 0;
+  width: 100% !important;
+  height: initial;
+  outline: none;
+  border: 1px solid #d6d6d6;
+  border-radius: 20px;
+}
+.search-suggestions {
+  position: absolute;
+  background: white;
+  width: calc(100% - 30px);
+  padding: 15px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  display: none;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+
+.search-suggestions ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.no-search-results-form {
+  display: none !important;
+}
+.search-suggestions li {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #f0f0f0;
+  margin-left: 0;
+}
+.search-suggestions li:last-child {
+  border: none;
+}
+.search-suggestions li img {
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+}
+
+.search-suggestions li a {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: #333;
+}
+
+/* 	.search-suggestions li a:hover {
+  background: #f8f8f8;
+} */
+
+.search-suggestions .view-all {
+  display: block;
+  padding: 8px;
+  text-align: center;
+  background: #000;
+  text-decoration: none;
+  color: #fff;
+  border-radius: 40px;
+}
+@media (max-width: 767px) {
+  .search-suggestions li a:hover {
+    width: auto;
+  }
+  .search-suggestions span {
+    font-size: 12px;
+  }
+  .search-suggestions .view-all {
+    font-size: 14px;
+    padding: 6px;
+  }
+}
+/* search end */
