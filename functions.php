@@ -30,18 +30,26 @@ add_action('after_setup_theme', 'my_theme_setup');
 
 // General security headers
 function add_security_headers() {
+    $nonce = base64_encode(random_bytes(16));
+
     header("X-Frame-Options: SAMEORIGIN");
     header("X-XSS-Protection: 1; mode=block");
     header("X-Content-Type-Options: nosniff");
     header("Referrer-Policy: no-referrer-when-downgrade");
-    header("Content-Security-Policy: default-src 'self';");
+
+    if (is_admin()) {
+        header("Content-Security-Policy: default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval';");
+    } else {
+        header("Content-Security-Policy: default-src 'self'; style-src 'self'; script-src 'self' 'nonce-$nonce';");
+    }
+
     header("Permissions-Policy: geolocation=(), camera=(), microphone=(), accelerometer=(), gyroscope=(), magnetometer=()");
 }
 // add_action('send_headers', 'add_security_headers');
 
 // Remove WordPress version number from HTML head
 remove_action('wp_head', 'wp_generator');
-header_remove("X-Powered-By");
+// header_remove("X-Powered-By");
 
 
 // global files
